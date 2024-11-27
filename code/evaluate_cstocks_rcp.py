@@ -206,6 +206,8 @@ model_files = [
     "../data/test_MPI-ESM1-2-HR_85_1850_2100.csv",
     "../data/test_MRI-ESM2-0_85_1850_2100.csv",
     
+    "../data/test_MPI-ESM1-2-HR_global85_1850_2100.csv",
+    
 ]
 
 print("Reading data ...")

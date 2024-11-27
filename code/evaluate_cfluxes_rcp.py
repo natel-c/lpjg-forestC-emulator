@@ -94,7 +94,7 @@ def merge_predictions_with_true(y, predictions, df):
 
 def save_predictions(predictions_df, path_dir, model_type, name):
     model_path = 'nn' if model_type == 'nn' else 'rf'
-    predictions_df.to_csv(f'{path_dir}/{task}/{model_path}/predictions/predictions_{name}_rcp.csv', index=False)
+    predictions_df.to_csv(f'{path_dir}/{task}/{model_path}/predictions/predictions_{name}.csv', index=False)
 
 def calculate_metrics(metrics_df, name, y, predictions, df, targets):
     y_pred_df = predictions.copy()
@@ -208,6 +208,8 @@ model_files = [
     "../data/test_MPI-ESM1-2-HR_85_1850_2100.csv",
     "../data/test_MRI-ESM2-0_85_1850_2100.csv",
     
+   "../data/test_MPI-ESM1-2-HR_global85_1850_2100.csv",
+       
 ]
 print("Reading data ...")
 # For NN models
@@ -218,37 +220,3 @@ datasets_rf = create_datasets(model_files, features=FEATURES, targets=TARGETS, m
 print("Predicting and evaluating emulators")
 metrics_df_nn = evaluate_model(nn_model, datasets_nn, TARGETS, path_dir, model_type='nn')
 metrics_df_rf = evaluate_model(rf_model, datasets_rf, TARGETS , path_dir, model_type='rf')
-#%%
-# Average metrics per scenario and emulator
-nn_file_path = os.path.join("../results", task, "nn", "evaluation_metrics_rcp.csv")  # NN metrics
-rf_file_path = os.path.join("../results", task, "rf", "evaluation_metrics_rcp.csv")  # RF metrics
-df_nn = pd.read_csv(nn_file_path)
-df_rf = pd.read_csv(rf_file_path)
-
-df_nn['scenario'] = df_nn['dataset'].apply(lambda x: x.split('_')[-1])
-df_rf['scenario'] = df_rf['dataset'].apply(lambda x: x.split('_')[-1])
-
-
-print("Making a table with the evaluation results for the paper")
-result = []
-for metric in ['nrmse', 'rel_bias', 'r2']:
-    for scenario in df_nn['scenario'].unique():
-        row = {
-            '': metric.upper(),  
-            'Scenario': scenario, 
-            'GPP_ANN': np.mean(df_nn.loc[(df_nn['target'] == 'GPP') & (df_nn['scenario'] == scenario), metric].values),
-            'GPP_RF': np.mean(df_rf.loc[(df_rf['target'] == 'GPP') & (df_rf['scenario'] == scenario), metric].values),
-            'NPP_ANN': np.mean(df_nn.loc[(df_nn['target'] == 'NPP') & (df_nn['scenario'] == scenario), metric].values),
-            'NPP_RF': np.mean(df_rf.loc[(df_rf['target'] == 'NPP') & (df_rf['scenario'] == scenario), metric].values),
-            'Rh_ANN': np.mean(df_nn.loc[(df_nn['target'] == 'Rh') & (df_nn['scenario'] == scenario), metric].values),
-            'Rh_RF': np.mean(df_rf.loc[(df_rf['target'] == 'Rh') & (df_rf['scenario'] == scenario), metric].values),
-           
-        }
-        result.append(row)
-
-# Convert the list of dictionaries to a DataFrame
-result_df = pd.DataFrame(result)
-result_df = np.round(result_df, 2)
-result_df.to_csv(f"../results/{task}/{task}_eval_metrics_rcp.csv", index = False)
-
-print(f"Evaluating results saved to ./results/{task}/{task}_eval_metrics_rcp.csv")
