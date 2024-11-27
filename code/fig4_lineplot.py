@@ -28,8 +28,11 @@ veg_classes_dict = {
 def load_and_filter_data(path_dir, climate_models, emulator, scenario):
     df_list = []
     for model in climate_models:
-        file_path = os.path.join(path_dir, 'cfluxes', emulator, 'predictions', f'predictions_Test_{model}_RCP{scenario}.csv')
-        df = pd.read_csv(file_path)
+        file_path_hist = os.path.join(path_dir, 'cfluxes', emulator, 'predictions', f'predictions_Test_{model}_historical.csv')
+        file_path_future = os.path.join(path_dir, 'cfluxes', emulator, 'predictions', f'predictions_Test_{model}_RCP{scenario}.csv')
+        df_hist = pd.read_csv(file_path_hist)
+        df_future = pd.read_csv(file_path_future)
+        df= pd.concat([df_hist, df_future], axis =0 )
         df_list.append(df)
     return pd.concat(df_list, ignore_index=True)
 
@@ -39,8 +42,10 @@ def process_data(df, veg_classes):
     df_filtered = df_filtered.drop(['veg_class', 'model', 'scenario'], axis=1)
     return df_filtered.groupby('time_since_disturbance').mean()
 
+# Set global font size
+plt.rcParams.update({'font.size': 16}) 
 # Plotting 
-def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, gpp_y_max=None, gpp_ticks=None, fontsize=14):
+def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, gpp_y_max=None, gpp_ticks=None):
     for target in TARGETS:
         color = COLORS[target]
         ax.plot(df_nn[f'{target}_pred'], linestyle='--', linewidth=3, label=f'NN {target}', color=color)
@@ -48,10 +53,10 @@ def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, gpp_y_max=None, gpp
         ax.plot(df_rf[f'{target}_pred'], linestyle='dotted', linewidth=3, label=f'RF {target}', color=color)
     
     ax.set_xlim(1850, 2100)
-    ax.set_ylabel('kgCm$^{{-2}}$', fontsize=fontsize)
-    ax.set_xlabel('Year', fontsize=fontsize)
-    ax.tick_params(axis='both', labelsize=fontsize)
-    ax.text(0.05, 0.95, label, transform=ax.transAxes, fontsize=fontsize, fontweight='bold', va='top', ha='left')
+    ax.set_ylabel('kgCm$^{{-2}}$')
+    ax.set_xlabel('Year')
+    ax.tick_params(axis='both')
+    ax.text(0.05, 0.95, label, transform=ax.transAxes, fontweight='bold', va='top', ha='left')
 
 # Plot
 #Create a grid of subplots: 4 rows (scenarios) x 4 columns (biome)
@@ -82,7 +87,7 @@ legend_elements = [
 ]
 
 # Add the legend to the figure at the bottom center
-fig.legend(handles=legend_elements, loc='lower right', ncol=6, fontsize=12)
+fig.legend(handles=legend_elements, loc='lower right', ncol=6)
 plt.tight_layout()
-plt.savefig(os.path.join('..', 'results/figures', f'fig4_cfluxes_lineplot.jpg'), dpi=200)
+plt.savefig(os.path.join('..', 'results/figures', 'fig4_cfluxes_lineplot.jpg'), dpi=200)
 plt.close()

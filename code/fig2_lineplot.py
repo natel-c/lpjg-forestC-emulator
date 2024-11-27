@@ -24,8 +24,11 @@ LABELS = [
 def load_and_filter_data(path_dir, climate_models, emulator, scenario):
     df_list = []
     for model in climate_models:
-        file_path = os.path.join(path_dir, 'cstocks', emulator, 'predictions', f'predictions_Test_{model}_RCP{scenario}.csv')
-        df = pd.read_csv(file_path)
+        file_path_hist = os.path.join(path_dir, 'cstocks', emulator, 'predictions', f'predictions_Test_{model}_historical.csv')
+        file_path_future = os.path.join(path_dir, 'cstocks', emulator, 'predictions', f'predictions_Test_{model}_RCP{scenario}.csv')
+        df_hist = pd.read_csv(file_path_hist)
+        df_future = pd.read_csv(file_path_future)
+        df= pd.concat([df_hist, df_future], axis =0 )
         df_list.append(df)
     return pd.concat(df_list, ignore_index=True)
 
@@ -35,8 +38,10 @@ def process_data(df, veg_classes):
     df_filtered = df_filtered.drop(['veg_class', 'model', 'scenario'], axis=1)
     return df_filtered.groupby('time_since_disturbance').mean()
 
+# Set global font size
+plt.rcParams.update({'font.size': 16}) 
 # Plotting function
-def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, soilC_y_max=None, soilC_ticks=None, fontsize=14):
+def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, soilC_y_max=None, soilC_ticks=None):
     """
     Plot the predictions and true values for a given region on a specific subplot axis, with SoilC on a different y-axis.
     """
@@ -50,9 +55,9 @@ def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, soilC_y_max=None, s
     ax.plot(df_rf['LitterC_pred'], linestyle='dotted', linewidth=3, label='RF LitterC', color=COLORS['LitterC'])
 
     ax.set_xlim(1850, 2100)
-    ax.set_ylabel('VegC and LitterC (kgCm$^{-2}$)', fontsize=fontsize)
-    ax.set_xlabel('Year', fontsize=fontsize)
-    ax.tick_params(axis='both', labelsize=fontsize)
+    ax.set_ylabel('VegC and LitterC (kgCm$^{-2}$)')
+    ax.set_xlabel('Year')
+    ax.tick_params(axis='both')
     
     # Add a secondary y-axis for SoilC
     ax2 = ax.twinx()
@@ -60,8 +65,8 @@ def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, soilC_y_max=None, s
     ax2.plot(df_nn['SoilC_true'], linewidth=3, label='LPJ-GUESS SoilC', color=COLORS['SoilC'])
     ax2.plot(df_rf['SoilC_pred'], linestyle='dotted', linewidth=3, label='RF SoilC', color=COLORS['SoilC'])
     
-    ax2.set_ylabel('SoilC (kgCm$^{-2}$)', fontsize=fontsize)
-    ax2.tick_params(axis='y', labelsize=fontsize)
+    ax2.set_ylabel('SoilC (kgCm$^{-2}$)')
+    ax2.tick_params(axis='y')
     
     if y_max is not None:
         ax.set_ylim(top=y_max) 
@@ -73,7 +78,7 @@ def plot_predictions(df_nn, df_rf, ax, label='', y_max=None, soilC_y_max=None, s
         ax2.set_yticks(soilC_ticks) 
     
     # Add subplot label
-    ax.text(0.05, 0.95, label, transform=ax.transAxes, fontsize=fontsize, fontweight='bold', va='top', ha='left')
+    ax.text(0.05, 0.95, label, transform=ax.transAxes, fontweight='bold', va='top', ha='left')
     
 # Plot
 #Create a grid of subplots: 4 rows (scenarios) x 4 columns (biome)
@@ -116,7 +121,7 @@ for row, scenario in enumerate(SCENARIOS):
     label_idx += 1
 
 # Adjust layout to create space for the legend at the bottom
-fig.subplots_adjust(bottom=0.2)
+fig.subplots_adjust(bottom=0.8)
 
 # Define legend elements
 legend_elements = [
@@ -129,9 +134,9 @@ legend_elements = [
 ]
 
 # Add the legend to the figure at the bottom center
-fig.legend(handles=legend_elements, loc='lower right', ncol=6, fontsize=12)
+fig.legend(handles=legend_elements, loc='lower right', ncol=6)
 plt.tight_layout()
-plt.savefig(os.path.join('..', 'results/figures', f'fig2_cstocks_lineplot.jpg'), dpi=200)
+plt.savefig(os.path.join('..', 'results/figures', 'fig2_cstocks_lineplot.jpg'), dpi=200)
 plt.close()
 
     
