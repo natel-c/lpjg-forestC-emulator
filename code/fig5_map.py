@@ -65,6 +65,8 @@ def create_frame_diff(ax, data_mesh, cmap, vmin, vmax):
     
     return img
 
+# Set global font size
+plt.rcParams.update({'font.size': 14}) 
 def plot_all_maps(targets, models, path_dir, percent_error, cmap):
     fig, axes = plt.subplots(len(targets), len(models), 
                              subplot_kw={'projection': ccrs.PlateCarree()},
@@ -90,17 +92,17 @@ def plot_all_maps(targets, models, path_dir, percent_error, cmap):
             
             label_idx = row * len(models) + col
             ax.text(-0.05, 1.05, f'({labels[label_idx]}) {target} - {model.upper()}',
-                    transform=ax.transAxes, fontsize=10, fontweight='bold',
+                    transform=ax.transAxes, fontweight='bold',
                     va='bottom', ha='left')
                 
-            ax.tick_params(labelsize=8)  
-            ax.set_xlabel('Longitude', fontsize=10) 
-            ax.set_ylabel('Latitude', fontsize=10)  
+            ax.tick_params()  
+            ax.set_xlabel('Longitude') 
+            ax.set_ylabel('Latitude')  
 
     cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax), cmap=cmap), 
                         ax=axes, orientation='vertical', fraction=0.05, pad=0.1)
-    cbar.set_label('Percent error (%)', fontsize=10) 
-    cbar.ax.tick_params(labelsize=8)  
+    cbar.set_label('Percent error (%)') 
+    cbar.ax.tick_params()  
     
     plt.savefig(os.path.join(path_dir, 'figures/fig5_cfluxes_map.jpg'), dpi=DPI, bbox_inches='tight')
     plt.close()
