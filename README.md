@@ -8,6 +8,7 @@ This repository contains code accompanying our JGR submission, "Emulating grid-b
 - Peter Anthoni  
 - Neele Haß  
 - Almut Arneth  
+- Sam Rabin
 
 ## Objective
 The project aims to develop an emulator for the Lund-Potsdam-Jena General Ecosystem Simulator (LPJ-GUESS) to enable faster simulations of forest carbon pools and fluxes in LandSyMM. This emulation approach addresses the need for reduced computational expenses in large-scale, grid-based carbon modeling.
@@ -28,7 +29,7 @@ To set up the required conda environments for this project, use the provided `.y
    This environment includes TensorFlow (with GPU support) and SHAP for training and interpreting machine learning models.
 
    ```bash
-   conda env create -f tf-gpu-shap.yml
+   conda env create -f tf-gpu-shap-env.yml
    conda activate tf-gpu-shap
    ```
 
@@ -120,8 +121,8 @@ python fig5_map.py
 - **Figures 6 & 7**
 ```bash
 conda activate tf-gpu-shap
-python shap_cstocks.py
-python shap_cfluxes
+python shap_plot.py --task cstocks
+python shap_plot.py --task cfluxes
 ```
 
 # Contact
