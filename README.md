@@ -1,6 +1,6 @@
 # Machine Learning Emulation of Forest Carbon Stocks and Fluxes
 
-This repository contains code accompanying our JGR submission, "Emulating grid-based forest carbon dynamics using machine learning: an LPJ-GUESS application."
+This repository contains code accompanying our JGR submission, "Emulating grid-based Forest Carbon Dynamics using Machine Learning: an LPJ-GUESS Application."
 
 ## Authors 
 - Carolina Natel de Moura ([carolina.moura@kit.edu](mailto:carolina.moura@kit.edu))
@@ -30,7 +30,6 @@ To set up the required conda environments for this project, use the provided `.y
 
    ```bash
    conda env create -f tf-gpu-shap-env.yml
-   conda activate tf-gpu-shap
    ```
 
 2. **Geopandas Environment**  
@@ -48,7 +47,7 @@ conda activate tf-gpu-shap
 cd code
 ```
 
-###Carbon Stocks
+### Carbon Stocks
 
 - **Neural Network Training**
 
@@ -58,32 +57,57 @@ To reproduce paper results, edit the following line in train_nn_cstocks.py:
 Change the number of epochs to 1000
 epochs = 1  # change this to 1000
 ```
-Run the training script:
+
+Note: Increasing the number of epochs to 1000 may result in longer training times. Also, be aware that this will NOT overwrite the original trained model in the models/ directory, unless you manually adjust the script.
+
+Then run the training script:
 
 ```bash
 python train_nn_cstocks.py
 ```
 - **Random Forest Training**
+
 To reproduce paper results, edit the following line in train_rf_cstocks.py:
 
-Run the training script:
+```bash
+Change the number of estimators to 1000
+n_estimators=1, # change this to 1000
+```
+
+Then run the training script:
 ```bash
 python train_rf_cstocks.py
 ```
 
-###Carbon Fluxes
+### Carbon Fluxes
 - **Neural Network Training**
-Similarly, edit train_nn_cfluxes.py to set epochs = 1000, then:
+
+Similarly to Carbon Stocks, edit train_nn_cfluxes.py to set epochs = 1000, then:
 
 ```bash
 python train_nn_cfluxes.py
 ```
 - **Random Forest Training**
+
+Similarly to Carbon Stocks, edit train_rf_cfluxes.py to set n_estimators = 1000, then:
+
 ```bash
 python train_rf_cfluxes.py
 ```
-##4. Prediction and Evaluation
-After training, evaluate emulator performance:
+## 4. Shapley Explainations
+After training the models, you can generate Shapley value explanations for carbon stocks and fluxes to understand the importance of each feature in the model’s predictions.
+
+To calculate the Shapley values, edit the shap_plot.py script by removing the commented tags. Otherwise, the script will regenerate the Shapley plots using the saved values from the shap/ directory.
+
+To run the Shapley Explanations, execute:
+
+```bash
+python shap_plot.py --task cstocks
+python shap_plot.py --task cfluxes
+```
+
+## 5. Prediction and Evaluation
+After training, evaluate emulator performance. The results will be saved into results/.
 ```bash
 python evaluate_cstocks_historical.py
 python evaluate_cstocks_rcp.py
@@ -91,7 +115,6 @@ python make_eval_table_cstocks.py
 python evaluate_cfluxes_historical.py
 python evaluate_cfluxes_rcp.py
 python make_eval_table_cfluxes.py
-
 ```
 ## Reproducing the Figures
 
@@ -131,7 +154,7 @@ For questions or feedback, please reach out to Carolina Natel at carolina.moura@
 
 # Citation
 
-If you use this code in your research, please cite the authors and reference this GitHub repository.
+If you use any of this code in your experiments, please make sure to cite the following code: 
 
 # License 
 
