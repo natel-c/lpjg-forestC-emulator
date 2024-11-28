@@ -15,9 +15,9 @@ The project aims to develop an emulator for the Lund-Potsdam-Jena General Ecosys
 
 ## Getting started
 
-## 1. Download the Data
+## 1. Download the Data, Models and SHAP values
 
-Retrieve the dataset from the Zenodo repository
+Retrieve the data sets, pre-trained models and pre-calculated shap values from the [Zenodo repository](https://zenodo.org/records/14230951).
 
 ## 2. Install Dependencies
 
@@ -154,7 +154,9 @@ For questions or feedback, please reach out to Carolina Natel at carolina.moura@
 
 # Citation
 
-If you use any of this code in your experiments, please make sure to cite the following code: 
+If you use any of this code in your experiments, please make sure to cite the code: 
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14230951.svg)](https://doi.org/10.5281/zenodo.14230951)
 
 # License 
 
