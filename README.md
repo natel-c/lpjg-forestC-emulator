@@ -1,9 +1,9 @@
 # Machine Learning Emulation of Forest Carbon Stocks and Fluxes
 
-This repository contains code accompanying our JGR submission, "Emulating grid-based Forest Carbon Dynamics using Machine Learning: an LPJ-GUESS Application."
+This repository contains code accompanying our submission, "Emulating grid-based Forest Carbon Dynamics using Machine Learning: an LPJ-GUESSv4.1.1 Application."
 
 ## Authors 
-- Carolina Natel de Moura ([carolina.moura@kit.edu](mailto:carolina.moura@kit.edu))
+- Carolina Natel ([carolina.moura@kit.edu](mailto:carolina.moura@kit.edu))
 - David Martin Belda  
 - Peter Anthoni  
 - Neele Haß  
